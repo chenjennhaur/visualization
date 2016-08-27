@@ -1,14 +1,16 @@
 queue()
   .defer(d3.json,"/profile/1")
   .defer(d3.json,"/product/1")
+  .defer(d3.json,"/country")
   .await(salesonline);
   
 // var productline = dc.lineChart("#pline");
 var productcomposite = dc.compositeChart("#pline");
 var productpie = dc.pieChart("#ppie");
 var productbar = dc.barChart("#pbar");
+var heatmap = dc.heatMap("#hmap")
 
-function salesonline(error,profileJson,productJson)
+function salesonline(error,profileJson,productJson,countrycode)
 {
   var product = productJson;
   var profile = profileJson;
@@ -33,16 +35,7 @@ function salesonline(error,profileJson,productJson)
   
   var profile_ndx = crossfilter(profile);
   var product_ndx = crossfilter(product);
-  //var ndx = crossfilter();
-  //ndx.add(product.map(function(d){ return }));
-  //ndx.add(product.map(function(d){}));
-  //var all = ndx.groupAll();
-  var dim = product_ndx.dimension(dc.pluck('d.period'))
-  grp1 = dim.group().reduceSum(dc.pluck('d.wght'))
-  grp2 = dim.group().reduceSum(dc.pluck('d.pcs'))
-  grp3 = dim.group().reduceSum(dc.pluck('d.revenue'))
-  
-	   
+  	   
   var dimPeriod = product_ndx.dimension(function (d) {return d.period;});   
   var dimProduct = product_ndx.dimension(function (d) {return d.product;});
   var dimMonth = product_ndx.dimension(function (d) {return d.month;});
@@ -54,21 +47,19 @@ function salesonline(error,profileJson,productJson)
   var wghtByMonth = dimMonth.group().reduceSum(function(d) { return d.wght; });
   var pcsByMonth = dimMonth.group().reduceSum(function(d) { return d.pcs; });
   
-  var dimOrigDest = profile_ndx.dimension(function (d) {return d.orig+" "+d.dest;});
-  var revByOrigDest = dimOrigDest.group().reduceSum(function(d) { return d.revenue; });
+  
   
   productpie
-  .width(500)
-  .height(500)
+  .width(280)
+  .height(380)
   .innerRadius(100)
   .legend(dc.legend().x(0).y(0).gap(5))
   .dimension(dimSTC)
   .group(revBySTC)
   .renderLabel(false);
   
-  console.log(revByProduct.all());
-  
-  console.log(dimProduct);
+  //console.log(revByProduct.all());
+  //console.log(dimProduct);
   
   productbar
   .width(780)
@@ -84,8 +75,8 @@ function salesonline(error,profileJson,productJson)
   .xUnits(dc.units.ordinal);
  
   productcomposite
-   .width(780)
-   .height(480)
+   .width(580)
+   .height(380)
    .yAxisLabel("Revenue")
    .elasticY(true)
    .xAxisLabel("Date")
@@ -93,6 +84,7 @@ function salesonline(error,profileJson,productJson)
    .x(d3.time.scale().domain([new Date(2016, 3, 1), new Date(2016, 10, 31)]))
    .legend(dc.legend().x(500).y(20).itemHeight(13).gap(5))
    .renderHorizontalGridLines(true)
+   .brushOn(false)
    .compose([
      dc.lineChart(productcomposite)
 	   .dimension(dimPeriod)
@@ -107,7 +99,45 @@ function salesonline(error,profileJson,productJson)
 	   .colors('green')
 	   .group(revByMonth,'Revenue')
    ]);
- 
+    
+	var heatColorMapping = function(d) {
+        if (d < 0) {
+          return d3.scale.linear().domain([0,5000]).range(["red", "#e5e5e5"])(d);
+        }
+        else {
+          return d3.scale.linear().domain([5000,100000]).range(["#e5e5e5", "green"])(d);
+        }
+    };
+    
+	heatColorMapping.domain = function() {
+      return [0,100000];
+    };
+	
+	var dimOrigDest = profile_ndx.dimension(function (d) {return [d.orig,d.dest];});
+    var revByOrigDest = dimOrigDest.group().reduceSum(function(d) { return d.revenue; });
+  
+    //console.log(revByOrigDest.all());
+    //console.log(dimOrigDest)
+	
+	
+    heatmap
+	  .width(40*20+80)
+	  .height(40*20+40)
+	  .dimension(dimOrigDest)
+	  .group(revByOrigDest)
+	  .keyAccessor(function(d) { return countrycode[d.key[0]]; })
+      .valueAccessor(function(d) { return countrycode[d.key[1]]; })
+      .colorAccessor(function(d) { return +d.value; })
+      .title(function(d) {
+        return "Orig:   " + countrycode[d.key[0]] + "\n" +
+               "Dest:  " + countrycode[d.key[1]] + "\n" +
+               "Revenue: " +d.value ;})
+      //.colors(heatColorMapping)
+	  .colors(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"])
+      .calculateColorDomain();
+	  
+	  
+	  
  // productline
  // .width(780)
  // .height(380)

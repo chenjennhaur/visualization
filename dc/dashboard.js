@@ -38,8 +38,8 @@ d3.csv("../static/oppo.csv", function(error,data) {
   var maxdate = new Date(2016,12,1);
   
   oppbar
-  .width(480)
-  .height(380)
+  .width(580)
+  .height(280)
   .elasticY(true)
   .yAxisLabel("Committed Revenue")
   .xAxisLabel("Date")
@@ -47,8 +47,6 @@ d3.csv("../static/oppo.csv", function(error,data) {
   .x(d3.time.scale().domain([new Date(2014, 0, 1), new Date(2016, 11, 31)]))
   .filter([new Date(2016,5,1),new Date(2016,8,1)])
   .xUnits(d3.time.months).round(d3.time.month.round)
-  //.x(d3.scale.linear().domain(["07 - Shipped to Profile","06 - First Consignment"]))
-  //.xUnits(dc.units.ordinal)
   .dimension(dimMonth)
   .group(revByMonthGroup);
   
@@ -66,7 +64,7 @@ d3.csv("../static/oppo.csv", function(error,data) {
   .height(280)
   .slicesCap(4)
   .innerRadius(100)
-  .legend(dc.legend().x(0).y(0).gap(5))
+  .legend(dc.legend().x(90).y(100).gap(5))
   //.x(d3.scale.linear().domain(["07 - Shipped to Profile","06 - First Consignment"]))
   //.xUnits(dc.units.ordinal)
   .dimension(dimStage)
@@ -74,13 +72,13 @@ d3.csv("../static/oppo.csv", function(error,data) {
   .renderLabel(false)
   .render();
 
-  dataTable.width(960).height(800)
+  dataTable.width(760).height(500)
   .dimension(datedim)
   .group(function(d){return "Opportunity Table"})
   .size(10)
   .columns([
-    function(d) {return d.date},
-	function(d) {return d.month},
+    //function(d) {return d.date},
+	//function(d) {return d.month},
 	function(d) {return d.stage},
 	function(d) {return d.source},
 	function(d) {return d.revenue}
