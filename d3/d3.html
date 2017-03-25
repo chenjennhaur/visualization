@@ -81,7 +81,7 @@
 				
 						
 				var frows = d3.select('#d3table').select("tbody").selectAll("tr")
-						.data(searched_data)
+						.data(searched_data,function(d){return d.uid}) // key function is critical
 				frows.enter()
 				     .append("tr")	
 				
@@ -91,9 +91,10 @@
 										return { column: column, value: row[column]}
 									})
 								})
-					        //.enter()            Not Required. If it sees the same number of rows left, it will not do anything. 
-							//.append('td')
+					        .enter()            
+							.append('td')
 							.text(function (d) { return d.value })
+				//cells.exit().remove();
 					 
 					 
 				
@@ -115,7 +116,7 @@
 					return (subregex.test(p.subject)) && (uidregex.test(p.uid))
 				})
 				var frows = d3.select('#d3table').select("tbody").selectAll("tr")
-						.data(searched_data)
+						.data(searched_data,function(d){ return d.uid}) // key function is critical
 				frows.enter()
 				     .append("tr")	
 				
@@ -125,7 +126,10 @@
 										return { column: column, value: row[column]}
 									})
 								})
+							.enter()
+							.append('td')
 							.text(function (d) { return d.value })
+							//cells.exit().remove();
 				frows.exit().remove();
 
 			});
