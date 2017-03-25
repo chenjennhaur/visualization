@@ -15,17 +15,21 @@
 			
 	   d3.select("#FilterableTable").append("div")
 			.attr("class", "SearchBar")
-			.append("p")
-			.attr("class", "SearchBar")
-			.text("Search By Subjects:");
-
+			
 	  d3.select(".SearchBar")
 		.append("input")
 		.attr("class", "SearchBar")
-		.attr("id", "search")
+		.attr("id", "searchsub")
 		.attr("type", "text")
-		.attr("placeholder", "Search...");		
-		   
+		.attr("placeholder", "Search Subjects...");		
+	
+      d3.select(".SearchBar")
+		.append("input")
+		.attr("class", "SearchBar")
+		.attr("id", "searchuid")
+		.attr("type", "text")
+		.attr("placeholder", "Search UID...");	
+	
 	   var table = d3.select('#FilterableTable').append('table').attr("id","d3table")
 	   var thead = table.append('thead')
 	   var tbody = table.append('tbody')
@@ -62,14 +66,17 @@
 		var columns = ['uid','book','title','subject','summary','original_publisher','digital_publisher','format','language','copyright','author_name','published']
 		var d3table = tabulate(data,columns)
 		//https://bost.ocks.org/mike/constancy/
-		d3.select("#search")
+		d3.select("#searchsub")
 			.on("keyup",function(){
-				text = this.value.trim();
-				var regex = new RegExp("^.*" + text + ".*", "i");
-				console.log(text);
+				subtext = d3.select('#searchsub').node().value.trim();
+				uidtext = d3.select('#searchuid').node().value.trim();
+				var subregex = new RegExp("^.*" + subtext + ".*", "i");
+				var uidregex = new RegExp("^.*" + uidtext + ".*", "i");
+				//console.log(subtext);
+				//console.log(uidtext);
 				
 				searched_data = data.filter(function(p) {
-					return (regex.test(p.subject))
+					return (subregex.test(p.subject)) && (uidregex.test(p.uid))
 				})
 				
 						
@@ -94,7 +101,34 @@
 				frows.exit().remove();
 
 			});
-		//console.log(data)
+		
+		d3.select("#searchuid")
+			.on("keyup",function(){
+				subtext = d3.select('#searchsub').node().value.trim();
+				uidtext = d3.select('#searchuid').node().value.trim();
+				var subregex = new RegExp("^.*" + subtext + ".*", "i");
+				var uidregex = new RegExp("^.*" + uidtext + ".*", "i");
+				//console.log(subtext);
+				//console.log(uidtext);
+				
+				searched_data = data.filter(function(p) {
+					return (subregex.test(p.subject)) && (uidregex.test(p.uid))
+				})
+				var frows = d3.select('#d3table').select("tbody").selectAll("tr")
+						.data(searched_data)
+				frows.enter()
+				     .append("tr")	
+				
+				cells = frows.selectAll('td')
+								cells.data(function(row) {
+									return columns.map(function (column) {
+										return { column: column, value: row[column]}
+									})
+								})
+							.text(function (d) { return d.value })
+				frows.exit().remove();
+
+			});
 		
 	});
 	
