@@ -3,11 +3,12 @@ table, th, td {
 }
 
 table{
-    font-size: 16px;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    table-layout: fixed;
+	font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     border-spacing: 0;
-    width: 100%;
+    width: 1500px;
 }
 
 
@@ -16,13 +17,28 @@ th {
     padding-bottom: 11px;
     background-color: #4CAF50;
     color: white;
+	
 }
 
 td, th {
     border: 1px solid #ddd;
     text-align: left;
     padding: 8px;
+	overflow-wrap: break-word;
 }
+
+th.script_id { width:5% }
+th.script_status { width:2.5% }
+th.script_category { width:5% }
+th.script_name { width:5% }
+th.business_case { width:10% }
+th.purpose { width:10% }
+th.keywords { width:5% }
+th.script_owner { width:5% }
+th.created_by { width:5% }
+th.approved_by { width:5% }
+th.variables { width:5% }
+th.LvlCnt{ width:2.5% }
 
 th {
     font-weight: bold;
