@@ -1,0 +1,51 @@
+﻿table, th, td {
+   border: 1px solid black;
+}
+
+
+table#d3table {
+    table-layout: fixed;
+	font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    border-spacing: 1;
+    width: 1200px;
+}
+
+
+th {
+    padding-top: 11px;
+    padding-bottom: 11px;
+    background-color: #d40511;
+    color: white;
+	
+}
+
+td, th {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px;
+	overflow-wrap: break-word;
+}
+th.script_id { width:5% }
+th.script_status { width:2.5% }
+th.script_category { width:5% }
+th.script_name { width:5% }
+th.business_case { width:8% }
+th.purpose { width:10% }
+th.keywords { width:5% }
+th.script_owner { width:5% }
+th.created_by { width:5% }
+th.approved_by { width:5% }
+th.variables { width:5% }
+th.LvlCnt{ width:2.5% }
+
+th {
+    font-weight: bold;
+    text-align: center;
+}
+
+td, th {
+    display: table-cell;
+    vertical-align: middle;
+}
